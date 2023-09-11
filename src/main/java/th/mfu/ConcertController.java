@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.objenesis.instantiator.gcj.GCJInstantiator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
@@ -20,21 +21,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class ConcertController {
     // TODO: create hashmap of concerts for storing data
-    private static int nextId = 1;
+    private int nextId = 1;
     private HashMap<Integer, Concert> concertMap = new HashMap<Integer, Concert>();
 
-@InitBinder
-public final void InitBinderUsuariosFormValidator(final WebDataBinder binder, final Locale locale) {
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-    binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
-}
+    // TODO: add initbinder to convert date
+    @InitBinder
+    public final void initBinderUsuariosFormValidator(final WebDataBinder binder, final Locale locale) {
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
+    }
 
     @GetMapping("/concerts")
     public String listConcerts(Model model) {
         // TODO: add concerts to model
         model.addAttribute("concerts", concertMap.values());
         // TODO: return a template to list concerts
-        return "list-concerts";
+        return "list-concert";
     }
 
     @GetMapping("/add-concert")
@@ -64,10 +66,9 @@ public final void InitBinderUsuariosFormValidator(final WebDataBinder binder, fi
         return "redirect:/concerts";
     }
 
-    
     @GetMapping("/delete-concert")
     public String removeAllConcerts() {
-        //TODO: clear all employees and reset id
+        // TODO: clear all employees and reset id
         concertMap.clear();
         nextId = 1;
         // TODO: redirect to list concerts
